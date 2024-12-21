@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from gradio_client import Client
+import random
 
 app = Flask(__name__)
 
@@ -11,6 +13,7 @@ app.secret_key = 'your_secret_key_here'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///yourdatabase.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 # Models
 class User(db.Model):
@@ -19,6 +22,7 @@ class User(db.Model):
     password = db.Column(db.String(150), nullable=False)
     quizzes_completed = db.Column(db.Integer, default=0)
     total_score = db.Column(db.Integer, default=0)
+    games_played = db.Column(db.Integer, default=0)  # Add games_played field
 
 class Quiz(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,6 +36,15 @@ class Quiz(db.Model):
 
     def __repr__(self):
         return f'<Quiz {self.title}>'
+
+class Game(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return f'<Game {self.title}>'
 
 @app.route('/')
 def home():
@@ -58,10 +71,21 @@ def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        
+        # Check if the username already exists
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            flash('Username already exists. Please choose a different username.', 'danger')
+            return redirect(url_for('signup'))
+        
+        # Create a new user
         new_user = User(username=username, password=password)
         db.session.add(new_user)
         db.session.commit()
+        
+        flash('Account created successfully! Please log in.', 'success')
         return redirect(url_for('login'))
+    
     return render_template('signup.html')
 
 @app.route('/dashboard')
@@ -89,6 +113,10 @@ def ask_chatgpt():
                 message=prompt,  # Use 'message' instead of 'param_0'
                 api_name="/chat"  # Use '/chat' instead of '/predict'
             )
+            # Ensure the response is complete
+            if isinstance(result, list):
+                result = result[0]
+            result = result.strip()
         except Exception as e:
             result = f"An error occurred: {e}"
 
@@ -110,11 +138,17 @@ def profile():
 @app.route('/progress')
 def progress():
     if 'username' in session:
+        user = User.query.get(session['user_id'])
+        total_quizzes = Quiz.query.filter_by(student_id=user.id).count()
+        completed_quizzes = Quiz.query.filter_by(student_id=user.id, score=100).count()  # Assuming 100 is the max score
+        total_games = 10  # Example value, replace with actual logic if needed
+        played_games = 6  # Example value, replace with actual logic if needed
+
         progress_data = {
-            'total_quizzes': 20,
-            'completed_quizzes': 15,
-            'total_games': 10,
-            'played_games': 6
+            'total_quizzes': total_quizzes,
+            'completed_quizzes': completed_quizzes,
+            'total_games': total_games,
+            'played_games': played_games
         }
         return render_template('progress.html', progress=progress_data)
     else:
@@ -139,57 +173,18 @@ def generate_quiz():
         difficulty = request.form.get('difficulty', 'medium')
 
         try:
-            # Use Gradio Client to call the API
             client = Client("affanahmed011/meta-llama-Meta-Llama-3-8B-Instruct")
-            prompt = f"Generate a {difficulty} difficulty quiz on the topic: {topic}. Include exactly 5 multiple-choice questions with 4 options each and mark the correct answer."
-            result = client.predict(message=prompt, api_name="/chat")
-
-            # Parse the API response
             questions = []
-            answers = []
-            options_list = []
-            current_question = None
-            current_options = []
-
-            for line in result.splitlines():
-                line = line.strip()
-                if line.startswith("Q:"):
-                    # Save the previous question if it exists
-                    if current_question:
-                        if len(current_options) == 4:
-                            questions.append(current_question)
-                            options_list.append(current_options)
-                        else:
-                            print(f"Error: Incomplete options for question: {current_question}")
-
-                    # Start a new question
-                    current_question = line[2:].strip()
-                    current_options = []
-                elif line.startswith("A:"):
-                    answers.append(line[2:].strip())
-                elif line.startswith("- "):  # Assuming options start with '- '
-                    current_options.append(line[2:].strip())
-
-            # Add the last question
-            if current_question and len(current_options) == 4:
-                questions.append(current_question)
-                options_list.append(current_options)
-
-            # Validate the data
-            if len(questions) != 5 or len(answers) != 5 or len(options_list) != 5:
-                raise ValueError(f"Expected 5 questions, options, and answers, but got: {len(questions)}, {len(options_list)}, {len(answers)}")
-
-            # Save to the database
-            formatted_questions = "\n".join(
-                f"{q}\nOptions: {', '.join(opts)}" for q, opts in zip(questions, options_list)
-            )
-            formatted_answers = "\n".join(answers)
+            for i in range(5):  # Generate 5 questions
+                prompt = f"Generate a {difficulty} difficulty quiz question on the topic: {topic}."
+                result = client.predict(message=prompt, api_name="/chat")
+                questions.append(result.strip())
 
             new_quiz = Quiz(
                 title=f"{topic} Quiz",
                 difficulty=difficulty,
-                questions=formatted_questions,
-                answers=formatted_answers,
+                questions="\n".join(questions),
+                answers="",  # No answers yet
                 max_score=100,
                 student_id=session['user_id'],
                 score=0
@@ -197,15 +192,13 @@ def generate_quiz():
             db.session.add(new_quiz)
             db.session.commit()
 
-            return redirect(url_for('quizzes'))
+            return redirect(url_for('take_quiz', quiz_id=new_quiz.id))
 
         except Exception as e:
-            # Log error details for debugging
             print(f"API Response: {result}")
             return f"An error occurred: {e}"
 
     return render_template('generate_quiz.html')
-
 
 @app.route('/quiz/<int:quiz_id>', methods=['GET', 'POST'])
 def take_quiz(quiz_id):
@@ -213,56 +206,68 @@ def take_quiz(quiz_id):
         return redirect(url_for('login'))
 
     quiz = Quiz.query.get_or_404(quiz_id)
-    questions = quiz.questions.split("\n")
-    correct_answers = quiz.answers.split("\n")
-
-    if len(questions) != len(correct_answers):
-        return "Error: Questions and answers do not match!"
+    questions = quiz.questions.split('\n')
 
     if request.method == 'POST':
-        answers = request.form.getlist('answers')
+        user_answers = request.form.getlist('answers')
+        correct_answers = []
         correct_count = 0
 
         try:
             client = Client("affanahmed011/meta-llama-Meta-Llama-3-8B-Instruct")
-            evaluation_prompts = []
-
-            for question, correct_answer, user_answer in zip(questions, correct_answers, answers):
-                evaluation_prompts.append(
-                    f"Question: {question}\nUser Answer: {user_answer}\nCorrect Answer: {correct_answer}\nIs the user's answer correct?"
-                )
-
-            results = [client.predict(message=prompt, api_name="/chat") for prompt in evaluation_prompts]
-
-            for result in results:
-                if "correct" in result.lower():
+            for question, user_answer in zip(questions, user_answers):
+                prompt = f"Question: {question}\nUser Answer: {user_answer}\nWhat is the correct answer?"
+                correct_answer = client.predict(message=prompt, api_name="/chat").strip()
+                correct_answers.append(correct_answer)
+                if user_answer.strip().lower() == correct_answer.strip().lower():
                     correct_count += 1
 
-            quiz.score = (correct_count / len(questions)) * 100
+            quiz.answers = "\n".join(correct_answers)
             db.session.commit()
 
-            return render_template('quiz_result.html', score=quiz.score, correct_count=correct_count, total=len(questions))
+            score = (correct_count / len(questions)) * 100
+            results = zip(questions, user_answers, correct_answers)
+
+            return render_template('quiz_result.html', score=score, correct_count=correct_count, total=len(questions), results=results)
 
         except Exception as e:
-            return f"An error occurred while evaluating answers: {e}"
+            return f"An error occurred while evaluating the answers: {e}"
 
     return render_template('take_quiz.html', quiz=quiz, questions=questions)
-
-
-
-
-
-
 
 @app.route('/games')
 def games():
     if 'username' in session:
-        games = [
-            {'title': 'Math Puzzle', 'description': 'Solve puzzles to unlock levels'},
-            {'title': 'Abacus Game', 'description': 'Use abacus to solve arithmetic problems'}
-        ]
+        games = Game.query.all()
         return render_template('games.html', games=games)
     return redirect(url_for('login'))
+
+@app.route('/play_game/<int:game_id>')
+def play_game(game_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    game = Game.query.get_or_404(game_id)
+    user = User.query.get(session['user_id'])
+    user.games_played += 1
+    db.session.commit()
+
+    return render_template('play_game.html', game=game)
+
+@app.route('/add_game', methods=['GET', 'POST'])
+def add_game():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        title = request.form['title']
+        description = request.form['description']
+        new_game = Game(title=title, description=description, user_id=session['user_id'])
+        db.session.add(new_game)
+        db.session.commit()
+        return redirect(url_for('games'))
+
+    return render_template('add_game.html')
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
@@ -278,18 +283,25 @@ def edit_profile():
 
     return render_template('edit_profile.html', user=user)
 
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()  # Create database tables
+@app.route('/math_game', methods=['GET', 'POST'])
+def math_game():
+    if 'username' not in session:
+        return redirect(url_for('login'))
 
-        # Check if test user already exists
-        if not User.query.filter_by(username='testuser').first():
-            # Create a test user
-            test_user = User(username='testuser', password='password123')
-            db.session.add(test_user)
-            db.session.commit()
-            print("Test user 'testuser' has been created.")
+    if request.method == 'POST':
+        answer = int(request.form['answer'])
+        correct_answer = int(request.form['correct_answer'])
+        if answer == correct_answer:
+            flash('Correct! Well done.', 'success')
         else:
-            print("Test user already exists.")
+            flash(f'Incorrect. The correct answer was {correct_answer}.', 'danger')
+        return redirect(url_for('math_game'))
 
+    num1 = random.randint(1, 10)
+    num2 = random.randint(1, 10)
+    correct_answer = num1 + num2
+
+    return render_template('math_game.html', num1=num1, num2=num2, correct_answer=correct_answer)
+
+if __name__ == '__main__':
     app.run(debug=True)

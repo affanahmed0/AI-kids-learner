@@ -1,14 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Result</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Quiz Result{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
     <h1>Quiz Results</h1>
-    <p>Your Score: {{ score }}%</p>
+    <p class="lead">Your Score: <span class="badge bg-info">{{ score }}%</span></p>
     <p>Correct Answers: {{ correct_count }} / {{ total }}</p>
-    <a href="/dashboard">Back to Dashboard</a>
-</body>
-</html>
+    {% for question, user_answer, correct_answer in results %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <p><strong>Question:</strong> {{ question }}</p>
+            <p><strong>Your Answer:</strong> {{ user_answer }}</p>
+            <p><strong>Correct Answer:</strong> {{ correct_answer }}</p>
+        </div>
+    </div>
+    {% endfor %}
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+</div>
+{% endblock %}

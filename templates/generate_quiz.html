@@ -1,24 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generate Quiz</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Generate Quiz{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
     <h1>Generate a New Quiz</h1>
     <form method="POST" action="/generate_quiz">
-        <label for="topic">Quiz Topic:</label>
-        <input type="text" id="topic" name="topic" required><br><br>
-
-        <label for="difficulty">Difficulty Level:</label>
-        <select id="difficulty" name="difficulty">
-            <option value="easy">Easy</option>
-            <option value="medium" selected>Medium</option>
-            <option value="hard">Hard</option>
-        </select><br><br>
-
-        <button type="submit">Generate Quiz</button>
+        <div class="mb-3">
+            <label for="topic" class="form-label">Quiz Topic:</label>
+            <input type="text" id="topic" name="topic" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="difficulty" class="form-label">Difficulty Level:</label>
+            <select id="difficulty" name="difficulty" class="form-select">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Generate Quiz</button>
     </form>
-</body>
-</html>
+</div>
+{% endblock %}
