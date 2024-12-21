@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Your Learning Progress</h2>
+        <div class="mb-3">
+            <h5>Quiz Progress:</h5>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: {{ progress.completed_quizzes / progress.total_quizzes * 100 }}%;" aria-valuenow="{{ progress.completed_quizzes }}" aria-valuemin="0" aria-valuemax="{{ progress.total_quizzes }}">
+                    {{ user.completed_quizzes }} of {{ user.total_quizzes }} quizzes completed
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <h5>Game Progress:</h5>
+            <div class="progress">
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress.played_games / progress.total_games * 100 }}%;" aria-valuenow="{{ progress.played_games }}" aria-valuemin="0" aria-valuemax="{{ progress.total_games }}">
+                    {{ user.played_games }} of {{ user.total_games }} games played
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Quizzes</title>
+</head>
+<body>
+    <h1>Your Quizzes</h1>
+    <ul>
+        {% for quiz in quizzes %}
+            <li>
+                <a href="{{ url_for('take_quiz', quiz_id=quiz.id) }}">{{ quiz.title }}</a> (Difficulty: {{ quiz.difficulty }})
+            </li>
+        {% else %}
+            <li>No quizzes found</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('generate_quiz') }}">Generate a new quiz</a>
+</body>
+</html>

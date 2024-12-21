@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Quiz</title>
+</head>
+<body>
+    <h1>{{ quiz.title }}</h1>
+    <form method="POST" action="/quiz/{{ quiz.id }}">
+        {% for question in questions %}
+            <div>
+                <p>{{ loop.index }}. {{ question }}</p>
+                <input type="text" name="answers" required>
+            </div>
+        {% endfor %}
+        <button type="submit">Submit Answers</button>
+    </form>
+</body>
+</html>

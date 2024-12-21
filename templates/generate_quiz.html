@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Quiz</title>
+</head>
+<body>
+    <h1>Generate a New Quiz</h1>
+    <form method="POST" action="/generate_quiz">
+        <label for="topic">Quiz Topic:</label>
+        <input type="text" id="topic" name="topic" required><br><br>
+
+        <label for="difficulty">Difficulty Level:</label>
+        <select id="difficulty" name="difficulty">
+            <option value="easy">Easy</option>
+            <option value="medium" selected>Medium</option>
+            <option value="hard">Hard</option>
+        </select><br><br>
+
+        <button type="submit">Generate Quiz</button>
+    </form>
+</body>
+</html>
