@@ -1,13 +1,99 @@
-/* Styles for the login page */
+/* General Styling */
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #f0f4f7;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background: #121212;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+}
+
+/* Profile Card */
+.profile-card {
+    background: linear-gradient(135deg, #1c1c1c, #282828);
+    border-radius: 20px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-card::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    animation: pulse 5s infinite ease-in-out;
+}
+
+.profile-image {
+    border: 5px solid #00b0ff;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    transition: transform 0.3s ease-in-out;
+}
+
+.profile-image:hover {
+    transform: scale(1.1);
+}
+
+/* Futuristic Title */
+.futuristic-title {
+    font-size: 2.5rem;
+    color: #00b0ff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.7), 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+/* Statistics Cards */
+.futuristic-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #4f5d73, #00b0ff);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.futuristic-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+}
+
+/* Button Styling */
+.futuristic-button {
+    border-radius: 30px;
+    border: 2px solid #fff;
+    background: transparent;
+    color: #fff;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.futuristic-button:hover {
+    background: #00b0ff;
+    border-color: #00b0ff;
+    color: #121212;
+    transform: translateY(-3px);
+}
+
+/* Pulse Effect */
+@keyframes pulse {
+    0% {
+        transform: scale(0);
+        opacity: 0.2;
+    }
+    50% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0.2;
+    }
 }
 
 /* Center the login box */

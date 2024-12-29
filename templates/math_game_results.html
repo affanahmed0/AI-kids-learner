@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Game Results</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a40, #2a2a72);
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+        }
+        .card {
+            background: linear-gradient(135deg, #2a2a72, #6a11cb);
+            border: none;
+            border-radius: 15px;
+        }
+        .btn-custom {
+            border-radius: 30px;
+        }
+        .btn-primary {
+            background-color: #3a86ff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #265ed8;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5 d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="card shadow-lg p-4 text-center">
+            <h2 class="mb-3">Math Game Results</h2>
+            <p class="mb-4">You answered <strong>{{ score }}</strong> out of <strong>{{ total }}</strong> questions correctly!</p>
+            <div class="mt-3">
+                <a href="{{ url_for('play_math_game') }}" class="btn btn-primary btn-custom me-3">Play Again</a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary btn-custom">Go to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

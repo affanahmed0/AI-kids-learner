@@ -4,18 +4,61 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1>Quiz Results</h1>
-    <p class="lead">Your Score: <span class="badge bg-info">{{ score }}%</span></p>
-    <p>Correct Answers: {{ correct_count }} / {{ total }}</p>
+    <!-- Header Section -->
+    <div class="text-center mb-4">
+        <h1 style="color: #6c63ff; font-weight: bold;">Quiz Results</h1>
+        <p class="text-muted">Here’s how you performed in the quiz. Great effort!</p>
+    </div>
+
+    <!-- Score Section -->
+    <div class="card bg-light shadow-sm mb-4">
+        <div class="card-body text-center">
+            <h2 style="color: #2a2a72; font-weight: bold;">Your Score</h2>
+            <div class="score-circle mx-auto mt-3 mb-3" style="width: 120px; height: 120px; background: linear-gradient(135deg, #6c63ff, #2a2a72); color: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold;">
+                {{ score }}%
+            </div>
+            <p><strong>Correct Answers:</strong> {{ correct_count }} / {{ total }}</p>
+        </div>
+    </div>
+
+    <!-- Question Results Section -->
     {% for question, user_answer, correct_answer in results %}
-    <div class="card mb-3">
+    <div class="card bg-secondary text-light mb-3 shadow">
         <div class="card-body">
             <p><strong>Question:</strong> {{ question }}</p>
-            <p><strong>Your Answer:</strong> {{ user_answer }}</p>
+            <p>
+                <strong>Your Answer:</strong> 
+                <span class="{{ 'text-success' if user_answer == correct_answer else 'text-danger' }}">
+                    {{ user_answer }}
+                </span>
+            </p>
             <p><strong>Correct Answer:</strong> {{ correct_answer }}</p>
         </div>
     </div>
     {% endfor %}
-    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+
+    <!-- Back to Dashboard Button -->
+    <div class="text-center mt-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-gradient-primary">Back to Dashboard</a>
+    </div>
 </div>
+
+<style>
+    .btn-gradient-primary {
+        background: linear-gradient(135deg, #6c63ff, #2a2a72);
+        color: #fff;
+        font-weight: bold;
+        border: none;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .btn-gradient-primary:hover {
+        background: linear-gradient(135deg, #2a2a72, #6c63ff);
+        box-shadow: 0 4px 10px rgba(108, 99, 255, 0.6);
+    }
+
+    .score-circle {
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+</style>
 {% endblock %}

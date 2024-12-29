@@ -1,21 +1,25 @@
 {% extends "base.html" %}
 
-{% block title %}Games{% endblock %}
+{% block title %}Available Games{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center">Available Games</h2>
-    <ul class="list-group">
+    <h1 class="text-center" style="color: #2a2a72;">Available Games</h1>
+    <p class="text-center lead" style="color: #6c63ff;">Choose a game to start learning and have fun!</p>
+    <ul class="list-group mt-4">
         {% for game in games %}
-        <li class="list-group-item bg-secondary text-light">
-            <h5>{{ game.title }}</h5>
-            <p>{{ game.description }}</p>
-            <a href="{{ url_for('play_game', game_id=game.id) }}" class="btn btn-success">Play Game</a>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="{{ url_for('play_' + game.name.lower().replace(' ', '_')) }}" style="text-decoration: none;">
+                {{ game.name }}
+            </a>
+            <span class="badge bg-primary">{{ game.difficulty }}</span>
         </li>
+        {% else %}
+        <li class="list-group-item text-center">No games available</li>
         {% endfor %}
     </ul>
     <div class="text-center mt-4">
-        <a href="{{ url_for('add_game') }}" class="btn btn-primary">Add New Game</a>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
     </div>
 </div>
 {% endblock %}

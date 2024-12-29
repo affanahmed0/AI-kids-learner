@@ -1,58 +1,87 @@
 {% extends "base.html" %}
 
-{% block title %}Student Dashboard{% endblock %}
+{% block title %}Kids Math Galaxy - Dashboard{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     <div class="row">
         <!-- Left Sidebar: Navigation -->
         <div class="col-md-3">
-            <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-action active">Dashboard</a>
-                <a href="{{ url_for('quizzes') }}" class="list-group-item list-group-item-action">Quizzes</a>
-                <a href="{{ url_for('games') }}" class="list-group-item list-group-item-action">Games</a>
-                <a href="{{ url_for('ask_chatgpt') }}" class="list-group-item list-group-item-action">Ask Galaxy</a>
+            <div class="list-group shadow" style="background-color: #2a2a72; border-radius: 10px;">
+                <a href="#" class="list-group-item list-group-item-action active" style="background-color: #1a1a40; border: none; color: #fff;">Dashboard</a>
+                <a href="{{ url_for('quizzes') }}" class="list-group-item list-group-item-action" style="color: #fff; background-color: transparent;">Quizzes</a>
+                <a href="{{ url_for('games') }}" class="list-group-item list-group-item-action" style="color: #fff; background-color: transparent;">Games</a>
+                <a href="{{ url_for('ask_Galaxy') }}" class="list-group-item list-group-item-action" style="color: #fff; background-color: transparent;">Ask Galaxy</a>
             </div>
         </div>
 
         <!-- Main Dashboard Section -->
         <div class="col-md-9">
-            <h2>Welcome, {{ username }}!</h2>
-            <p>Explore quizzes, play learning games, or ask questions about the topics covered in your math book.</p>
-
-            <!-- Added Links -->
-            <div class="mb-4">
-                <a href="{{ url_for('profile') }}" class="btn btn-secondary">View Profile</a>
-                <a href="{{ url_for('progress') }}" class="btn btn-warning">View Progress</a>
-                <a href="{{ url_for('quizzes') }}" class="btn btn-primary">Example Quizzes</a>
-                <a href="{{ url_for('games') }}" class="btn btn-success">Example Games</a>
+            <div class="card shadow-lg mb-4" style="background: linear-gradient(135deg, #1a1a40, #2a2a72); color: #fff; border-radius: 15px;">
+                <div class="card-body">
+                    <h2 class="card-title">Welcome, {{ username }}!</h2>
+                    <p class="card-text">Explore quizzes, play learning games, or ask questions about the topics covered in your math book. Unleash the power of AI in learning!</p>
+                    <div class="mt-3">
+                        <a href="{{ url_for('profile') }}" class="btn btn-outline-light me-2">View Profile</a>
+                        <a href="{{ url_for('progress') }}" class="btn btn-warning me-2">View Progress</a>
+                        <a href="{{ url_for('quizzes') }}" class="btn btn-primary me-2">Example Quizzes</a>
+                        <a href="{{ url_for('games') }}" class="btn btn-success">Example Games</a>
+                    </div>
+                </div>
             </div>
 
-            <div class="card-deck">
+
+            <!-- Printable PNGs Section -->
+            <div class="card shadow-lg mb-4" style="background: linear-gradient(135deg, #1a1a40, #2a2a72); color: #fff; border-radius: 15px;">
+                <div class="card-body">
+                    <h3 class="card-title">Printable Resources</h3>
+                    <div class="row">
+                        {% for i in range(1, 11) %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <img src="{{ url_for('static', filename='printable' ~ i ~ '.png') }}" class="card-img-top" alt="Printable {{ i }}">
+                                <div class="card-body text-center">
+                                    <a href="{{ url_for('static', filename='printable' ~ i ~ '.png') }}" class="btn btn-info" download>Download Printable {{ i }}</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cards Section -->
+            <div class="row">
                 <!-- Quizzes Card -->
-                <div class="card bg-secondary text-light">
-                    <div class="card-body">
-                        <h5 class="card-title">Take a Quiz</h5>
-                        <p class="card-text">Select a topic and challenge yourself with fun and interactive quizzes.</p>
-                        <a href="{{ url_for('quizzes') }}" class="btn btn-primary">Start Quiz</a>
+                <div class="col-md-4">
+                    <div class="card shadow-lg" style="background: linear-gradient(135deg, #2a2a72, #6a11cb); color: #fff; border-radius: 15px;">
+                        <div class="card-body">
+                            <h5 class="card-title">Take a Quiz</h5>
+                            <p class="card-text">Select a topic and challenge yourself with fun and interactive quizzes.</p>
+                            <a href="{{ url_for('quizzes') }}" class="btn btn-primary w-100">Start Quiz</a>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Games Card -->
-                <div class="card bg-secondary text-light">
-                    <div class="card-body">
-                        <h5 class="card-title">Play Learning Games</h5>
-                        <p class="card-text">Engage in fun math-based games to enhance your learning experience.</p>
-                        <a href="{{ url_for('games') }}" class="btn btn-success">Play Now</a>
+                <div class="col-md-4">
+                    <div class="card shadow-lg" style="background: linear-gradient(135deg, #1a1a40, #3a3a90); color: #fff; border-radius: 15px;">
+                        <div class="card-body">
+                            <h5 class="card-title">Play Learning Games</h5>
+                            <p class="card-text">Engage in fun math-based games to enhance your learning experience.</p>
+                            <a href="{{ url_for('games') }}" class="btn btn-success w-100">Play Now</a>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Ask a Question Card -->
-                <div class="card bg-secondary text-light">
-                    <div class="card-body">
-                        <h5 class="card-title">Ask a Question</h5>
-                        <p class="card-text">Need help with a topic? Ask a question and get instant answers.</p>
-                        <a href="{{ url_for('ask_chatgpt') }}" class="btn btn-info">Ask Galaxy</a>
+                <div class="col-md-4">
+                    <div class="card shadow-lg" style="background: linear-gradient(135deg, #1a1a40, #4a4a92); color: #fff; border-radius: 15px;">
+                        <div class="card-body">
+                            <h5 class="card-title">Ask a Question</h5>
+                            <p class="card-text">Need help with a topic? Ask a question and get instant AI-powered answers.</p>
+                            <a href="{{ url_for('ask_Galaxy') }}" class="btn btn-info w-100">Ask Galaxy</a>
+                        </div>
                     </div>
                 </div>
             </div>

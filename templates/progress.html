@@ -5,21 +5,42 @@
 {% block content %}
 <div class="container mt-5">
     <h2>Your Learning Progress</h2>
+    
+    <!-- Quiz Progress -->
     <div class="mb-3">
         <h5>Quiz Progress:</h5>
         <div class="progress">
-            <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ (progress.completed_quizzes / progress.total_quizzes) * 100 }}%;" aria-valuenow="{{ progress.completed_quizzes }}" aria-valuemin="0" aria-valuemax="{{ progress.total_quizzes }}">
+            <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" 
+                style="width: {{ (progress.completed_quizzes / progress.total_quizzes * 100) if progress.total_quizzes > 0 else 0 }}%;" 
+                aria-valuenow="{{ progress.completed_quizzes }}" 
+                aria-valuemin="0" 
+                aria-valuemax="{{ progress.total_quizzes }}">
                 {{ progress.completed_quizzes }} of {{ progress.total_quizzes }} quizzes completed
             </div>
         </div>
+        <ul class="list-group mt-3">
+            {% for quiz in progress.quiz_scores %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ quiz.title }}
+                <span class="badge bg-primary">{{ quiz.score }}%</span>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
+    
+    <!-- Game Progress -->
     <div class="mb-3">
         <h5>Game Progress:</h5>
         <div class="progress">
-            <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ (progress.played_games / progress.total_games) * 100 }}%;" aria-valuenow="{{ progress.played_games }}" aria-valuemin="0" aria-valuemax="{{ progress.total_games }}">
-                {{ progress.played_games }} of {{ progress.total_games }} games played
+            <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" 
+                style="width: {{ (progress.total_games / 5 * 100) if progress.total_games > 0 else 0 }}%;" 
+                aria-valuenow="{{ progress.total_games }}" 
+                aria-valuemin="0" 
+                aria-valuemax="5">
+                {{ progress.total_games }} of 5 games played
             </div>
         </div>
+        <p class="mt-2">Highest Math Game Score: <strong>{{ progress.math_game_score }}</strong></p>
     </div>
 </div>
 {% endblock %}

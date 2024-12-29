@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Ask Galaxy{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="text-center mb-4" style="color: #6c63ff; font-weight: bold;">Ask Galaxy</h1>
+            <p class="text-center text-muted">
+                Ask me math questions for kids, and I'll provide clear and easy-to-follow answers!
+            </p>
+
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-4">
+                    <form method="POST">
+                        <div class="form-group mb-3">
+                            <label for="prompt" class="form-label" style="color: #2a2a72;">Your Math Question:</label>
+                            <textarea 
+                                name="prompt" 
+                                class="form-control" 
+                                rows="4" 
+                                placeholder="E.g., What is 5 + 3? or How many sides does a triangle have?" 
+                                required 
+                                style="background: #f3f4f6; border: 1px solid #ddd; border-radius: 10px;">
+                            </textarea>
+                        </div>
+                        <button type="submit" class="btn btn-gradient-primary w-100 mt-3">Ask Galaxy</button>
+                    </form>
+                </div>
+            </div>
+
+            {% if result %}
+            <div class="card bg-light shadow border-0">
+                <div class="card-body">
+                    <h4 style="color: #6c63ff;">Response:</h4>
+                    <div style="white-space: pre-wrap; font-family: 'Courier New', Courier, monospace; font-size: 1rem; color: #2a2a72; max-height: 300px; overflow-y: auto;">
+                        {{ result | safe }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-gradient-primary {
+        background: linear-gradient(135deg, #6c63ff, #2a2a72);
+        color: #fff;
+        font-weight: bold;
+        border: none;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .btn-gradient-primary:hover {
+        background: linear-gradient(135deg, #2a2a72, #6c63ff);
+        box-shadow: 0 4px 10px rgba(108, 99, 255, 0.6);
+    }
+</style>
+{% endblock %}

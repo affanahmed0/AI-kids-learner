@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Math Bingo{% endblock %}
+
+{% block content %}
+<div class="container d-flex flex-column align-items-center" style="min-height: 100vh; justify-content: center;">
+    <div class="card shadow-lg text-center mb-4" style="background: linear-gradient(135deg, #2a2a72, #4a4a92); color: #fff; border-radius: 15px; padding: 20px; width: 100%; max-width: 600px;">
+        <h1 class="mb-4">Math Bingo</h1>
+        <p class="mb-3">
+            <strong>Score:</strong> {{ session['bingo_game']['score'] }} |
+            <strong>Questions Answered:</strong> {{ session['bingo_game']['questions_asked'] }}/{{ session['bingo_game']['question_limit'] }}
+        </p>
+
+        <!-- Bingo Card -->
+        <table class="table table-bordered text-center mb-4" style="color: #fff;">
+            <tbody>
+                {% for row in bingo_card %}
+                <tr>
+                    {% for number in row %}
+                    <td style="background-color: #1a1a40; border-color: #fff; font-weight: bold;">{{ number }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p class="mb-4"><strong>Question:</strong> {{ question }}</p>
+
+        <form method="POST">
+            <div class="mb-3">
+                <input 
+                    type="number" 
+                    name="answer" 
+                    placeholder="Your Answer" 
+                    required 
+                    class="form-control" 
+                    style="border: 2px solid #fff; background: transparent; color: #fff;">
+            </div>
+            <button type="submit" class="btn btn-primary w-100" style="border-radius: 30px;">Submit</button>
+        </form>
+
+        <a href="{{ url_for('games') }}" class="btn btn-secondary w-100 mt-3" style="border-radius: 30px;">Back to Games</a>
+    </div>
+</div>
+{% endblock %}
