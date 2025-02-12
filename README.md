@@ -1,9 +1,9 @@
-🤖**AI Kids Learner**  
+## 🤖 **AI Kids Learner**  
 An **AI-powered learning platform** designed for kids, integrating **quizzes, games, and NLP-based learning** to make education more interactive and engaging.  
 
 ---
 
-🚀 **Features**
+## 🚀 **Features**
 ✅ **AI-Generated Quizzes & Games**  
 ✅ **Interactive Learning with NLP**  
 ✅ **Adaptive Learning Based on Performance**  
@@ -13,7 +13,7 @@ An **AI-powered learning platform** designed for kids, integrating **quizzes, ga
 
 ---
 
-🛠 **Tech Stack**
+## 🛠 **Tech Stack**
 - **Backend**: Python, Flask/Django  
 - **Frontend**: HTML, CSS, JavaScript  
 - **AI & NLP**: Hugging Face Transformers  
@@ -22,7 +22,7 @@ An **AI-powered learning platform** designed for kids, integrating **quizzes, ga
 
 ---
 
-📥 **Installation**
+## 📥 **Installation**
 1. **Clone the Repository**  
    ```sh
    git clone https://github.com/affanahmed0/AI-kids-learner.git
@@ -50,7 +50,7 @@ An **AI-powered learning platform** designed for kids, integrating **quizzes, ga
 
 ---
 
-🎮 **Usage**
+## 🎮 **Usage**
 - **AI-Powered Learning**: Generate personalized quizzes based on student performance.  
 - **Game-Based Education**: Interactive educational games to enhance learning.  
 - **Adaptive Learning**: AI adjusts difficulty levels based on responses.  
@@ -59,12 +59,12 @@ An **AI-powered learning platform** designed for kids, integrating **quizzes, ga
 
 ---
 
-📜 **License**
+## 📜 **License**
 This project is **open-source**. Feel free to contribute and improve the system!  
 
 ---
 
-**Contributing**
+## 🤝 **Contributing**
 Want to contribute? Follow these steps:  
 1. Fork the repository.  
 2. Create a new branch (`feature-branch`).  
@@ -73,7 +73,7 @@ Want to contribute? Follow these steps:
 
 ---
 
-📞 **Contact**
+## 📞 **Contact**
 📧 Email: affanahmed809@gmail.com  
 🔗 GitHub: [@affanahmed0](https://github.com/affanahmed0)  
 
